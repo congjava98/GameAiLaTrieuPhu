@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ai là triệu phú</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="quizs.js"></script>
+    <script src="gameFeature.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="audio.js"></script>
+</head>
+<body>
+<!-- phần chèn âm thanh-->
+<audio autoplay loop id="audio">
+    <source src="audio/nhacnen.mp3" type="audio/mpeg">
+</audio>
+<audio id="false">
+    <source src="audio/fasle.mp3" type="audio/mpeg">
+</audio>
+<audio id="true">
+    <source src="audio/true.mp3" type="audio/mpeg">
+</audio>
+<audio id="win">
+    <source src="audio/win.mp3" type="audio/mpeg">
+</audio>
+<audio id="alert">
+    <source src="audio/alert.mp3" type="audio/mpeg">
+</audio>
+<audio id="start">
+    <source src="audio/start.mp3" type="audio/mpeg">
+</audio>
+<script>
+</script>
+<div id="quiz">
+    <div id="score"></div>  <!-- thẻ hiện tiền thưởng /-->
+    <div>
+        <button class="material-icons" id="offSound" onclick="soundOff()">contactless</button>
+        <button class="material-icons" id="showTranscript" onclick="gameManager.showTranscript()">XH</button>
+        <p id="showTable"></p>
+    </div>
+    <div id="question">Chào mừng bạn đến với chương trình ai là triệu phú!!</div> <!-- thẻ hiện câu hỏi /-->
+    <div id="ansDiv1">              <!-- thẻ hiện các câu trả lời /-->
+        <button class="bAns" onclick="chooseAnswer(this.id)" id="ans1"></button>
+        <button class="bAns" onclick="chooseAnswer(this.id)" id="ans2"></button>
+    </div>
+    <div id="ansDiv2">
+        <button class="bAns" onclick="chooseAnswer(this.id)" id="ans3"></button>
+        <button class="bAns" onclick="chooseAnswer(this.id)" id="ans4"></button>
+    </div>
+<!--    thẻ show thông báo-->
+    <div id="dInforPlayer"  style="position: relative">
+        <input id="inforPlayer" type="text" style="visibility: visible"  placeholder="Mời nhập tên!!">
+    </div>
+    <div id="ansDiv3">
+        <p id="show">
+        </p>
+    </div>
+<!--    thẻ show các sự lựa chọn-->
+    <div id="ansDiv4">
+        <button class="bAns3" onclick="start();soundStart()">Bắt đầu</button>
+    </div>
+</div>
+</body>
+</html>
+<!-----------------------------main----------------------------------------->
+<script>
+    let quiz1 = new Quiz("Câu 1: Ai là người tạo ra trò chơi này?",["A: Chú hàng xóm","B: Công chứ ai","C: Anh thợ điện","D: Bé phòng bên"],"B: Công chứ ai");
+    let quiz2 = new Quiz("Câu 2: Điền từ còn thiếu vào trong câu sau:\"Đục nước béo..\"?",["A: Vạc","B: Cá","C: Mèo","D: Cò"],"D: Cò");
+    let quiz3 = new Quiz("Câu 3: Việt Nam có chung biên giới với nước nào sau đây?",["A: Trung Quốc","B: Thái Lan","C: Myanmar","D: Bruney"],"A: Trung Quốc");
+    let quiz4 = new Quiz("Câu 4: Đâu là tên một ngôi chùa nổi tiếng ở Hà Nam?",["A: Trấn Quốc","B: Bổ Đà","C: Tam Chúc","D: Bãi Đính"],"C: Tam Chúc");
+    let quiz5 = new Quiz("Câu 5: Sóng biển thường được tạo ra do gì?",["A: Nắng","B: Gió","C: Mưa","D: Sương Mù"],"B: Gió");
+    let quiz6 = new Quiz("Câu 6: Âm thanh có tần số lớn hơn 20KHz gọi là gì?",["A: Siêu Âm","B: Hạ Âm","C: Cận Âm","D: Quá Âm"],"A: Siêu Âm");
+    let quiz7 = new Quiz("Câu 7: Tác phẩm nào được coi là tác phẩm nổi tiếng nhất của Hector Malot?",["A: Không gia đình","B: Đồi gió hú","C: Giã từ vũ khí","D: Miếng da lừa"],"A: Không gia đình");
+    let quiz8 = new Quiz("Câu 8: Ca sĩ nào không thuộc nhóm nhạc Big Bang của Hàn Quốc?",["A: T.O.P","B: G-Gragon","C: Yoochun","D: Deasung"],"C: Yoochun");
+    let quiz9 = new Quiz("Câu 9: Đâu là một hợp kim của Nhôm?",["A: Ferit","B: Đuyra","C:  Alkanoid","D: Alumin"],"B: Đuyra");
+    let quiz10 = new Quiz("Câu 10: Thiên tài Albert Einstein đã từng được mời làm tổng thống của đất nước nào?",["A: Latvia","B: Bungari","C: Israel","D: Jordan"],"C: Israel");
+    let nOfQ=10; // khai báo số lượng câu hỏi
+    let gameManager = new GameFeature(nOfQ); // khởi tạo game với số lượng các câu hỏi
+    gameManager.addQuiz(quiz1);//thêm câu hỏi vào mảng quizs
+    gameManager.addQuiz(quiz2);
+    gameManager.addQuiz(quiz3);
+    gameManager.addQuiz(quiz4);
+    gameManager.addQuiz(quiz5);
+    gameManager.addQuiz(quiz6);
+    gameManager.addQuiz(quiz7);
+    gameManager.addQuiz(quiz8);
+    gameManager.addQuiz(quiz9);
+    gameManager.addQuiz(quiz10);
+    function displayQuiz(index) { //hiển thị câu hỏi và các đáp án
+        document.getElementById("question").innerHTML=gameManager.quizs[index].question;
+        for (let i = 0; i < 4; i++) {
+            document.getElementById("ans" + (i + 1)).innerHTML = gameManager.quizs[index].answer[i];
+        }
+    }
+     // hiển thị câu hỏi đầu tiên ngay khi vào web
+    function displayScore() {
+        gameManager.displayScore();
+    }
+    function nextQuiz() { // dùng bỏ qua đáp án
+        if(gameManager.current<gameManager.limit-1){// chỉ loại bỏ các câu trừ câu cuối cùng
+            soundWin();
+            gameManager.nextQuiz();
+            displayQuiz(gameManager.current);
+        }
+        else{
+            document.getElementById("show").innerHTML="Không thể bỏ qua câu cuối cùng!!"
+        }
+
+    }
+
+    function chooseAnswer(id) { // check và hiển thị kết quả
+        let ans = document.getElementById(id).innerHTML;
+        gameManager.chooseAnswer(ans);
+        if (gameManager.checkAnswer(ans)){
+            soundTrue();
+            gameManager.nextQuizWin();
+            displayScore();
+            displayQuiz(gameManager.current)
+        }
+        else{
+            soundFalse()
+            resetQuiz();
+            displayScore();
+            return false;
+        }
+    }
+    function halfQuestion() {// gọi hàm tính năng 5050
+        gameManager.halfQuestion();
+    }
+    function resetQuiz() {
+        document.getElementById("ansDiv4").innerHTML="  <button class=\"bAns2\" onclick=\"nextQuiz();soundAlert()\">Bỏ qua</button>\n" +
+            "        <button class=\"bAns2\" onclick=\"halfQuestion();soundAlert()\">50/50</button>\n" +
+            "        <button class=\"bAns2\" onclick=\"askAudience();soundAlert()\">Tư vấn</button>\n" +
+            "        <button class=\"bAns2\" onclick=\"stopGame();soundAlert()\">Dừng chơi</button>\n" +
+            "        <button id='bAns2-1' onclick=\"start()\">Bắt đầu lại</button>";
+        displayQuiz(0);// reset lại các câu hỏi từ đầu
+        gameManager.endGame();
+        displayQuiz(gameManager.current);
+        displayScore();
+    }
+    function stopGame() { // khi dừng game hoặc winn thì sẽ in ra thông báo chiến thắng và nút bắt đầu lại
+        gameManager.stopGame();
+    }
+    function askAudience() { // gọi hàm hỏi ý kiến khán giả
+        gameManager.askAudience();
+    }
+    function start() { // gọi hàm reset
+        gameManager.getInforPlayer();
+        console.log(localStorage);
+        document.getElementById("inforPlayer").style.visibility="hidden";
+        document.getElementById('show').innerHTML="Bình tĩnh, tự tin, chiến thắng!!";
+        resetQuiz()
+    }
+
+    // remoteLS();
+</script>
+
